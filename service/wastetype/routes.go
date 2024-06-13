@@ -20,7 +20,7 @@ func NewHandler(store types.WasteTypeStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/waste-type/create", h.handleCreate).Methods("POST")
 	router.HandleFunc("/waste-type", h.handleGetAll).Methods("GET", "OPTIONS")
-	router.HandleFunc("/waste-type/{item-name}", h.handleGetByItemName).Methods("GET", "OPTIONS")
+	router.HandleFunc("/waste-type/{item}", h.handleGetByItemName).Methods("GET", "OPTIONS")
 }
 
 func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +51,7 @@ func (h* Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
-	str, ok := vars["item-name"]
+	str, ok := vars["item"]
 	if !ok {
 		fmt.Println("Something is wrong")
 	}
@@ -61,13 +61,13 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 		if err == iterator.Done {
 				break
 		}
-		if doc.Data()["itemName"] == str{
+		if doc.Data()["item"] == str{
 			json.NewEncoder(w).Encode(doc.Data())
 			break
 		}
 	}
 }
 
-func (h* Handler) handleDeleteByName(w http.ResponseWriter, r *http.Request){
+// func (h* Handler) handleDeleteByName(w http.ResponseWriter, r *http.Request){
 	
-}
+// }
