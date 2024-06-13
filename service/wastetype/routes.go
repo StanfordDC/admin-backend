@@ -51,17 +51,18 @@ func (h* Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
-	str, ok := vars["item"]
+	item, ok := vars["item"]
 	if !ok {
 		fmt.Println("Something is wrong")
 	}
-	iter := h.store.GetAllByItem(str)
+	iter := h.store.GetAllByItem(item)
+
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
 				break
 		}
-		if doc.Data()["item"] == str{
+		if doc.Data()["item"] == item{
 			json.NewEncoder(w).Encode(doc.Data())
 			break
 		}
