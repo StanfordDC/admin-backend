@@ -55,7 +55,7 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	if !ok {
 		fmt.Println("Something is wrong")
 	}
-	iter := h.store.GetAll()
+	iter := h.store.GetAllByItem(str)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {

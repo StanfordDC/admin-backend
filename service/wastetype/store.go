@@ -34,3 +34,9 @@ func (s* Store) GetAll() *firestore.DocumentIterator{
 	iter := wasteCollection.Documents(context.Background())
 	return iter
 }
+
+func(s* Store) GetAllByItem(item string) *firestore.DocumentIterator{
+	wasteCollection := s.db.Collection("wasteType").Where("item", "==", item)
+	iter := wasteCollection.Documents(context.Background())
+	return iter
+}
