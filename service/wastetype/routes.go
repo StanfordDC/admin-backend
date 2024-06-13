@@ -56,16 +56,11 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 		fmt.Println("Something is wrong")
 	}
 	iter := h.store.GetAllByItem(item)
-
+	
 	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-				break
-		}
-		if doc.Data()["item"] == item{
-			json.NewEncoder(w).Encode(doc.Data())
-			break
-		}
+		doc, _ := iter.Next()
+		json.NewEncoder(w).Encode(doc.Data())
+		break
 	}
 }
 
