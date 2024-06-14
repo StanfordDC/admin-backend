@@ -19,8 +19,9 @@ func NewStore(db *firestore.Client) *Store {
 }
 
 func (s *Store) Create(wastetype types.WasteType) error{
-	wasteCollection := s.db.Collection("wasteType")
-	_,_, err := wasteCollection.Add(context.Background(), map[string]interface{}{
+	ref := s.db.Collection("wasteType").NewDoc()
+	_, err := ref.Set(context.Background(), map[string]interface{}{
+		"id" : ref.ID,
 		"instructions":wastetype.Instructions,
 		"item":wastetype.Item,
 		"link":wastetype.Link,
@@ -74,3 +75,24 @@ func(s* Store) DeleteItemByName(item string) (bool, error){
 	}
 	return false, nil
 }
+
+// func(s* Store) Update(wastetype types.WasteType) error{
+// 	var id string
+// 	iter := s.GetAll()
+// 	for{
+// 		doc, err := iter.Next()
+// 		if err != nil{
+// 			break
+// 		}
+// 		if
+// 	}
+// 	wasteCollection := s.db.Collection("wasteType")
+// 	_,_, err := wasteCollection.Add(context.Background(), map[string]interface{}{
+// 		"instructions":wastetype.Instructions,
+// 		"item":wastetype.Item,
+// 		"link":wastetype.Link,
+// 		"material":wastetype.Material,
+// 		"recyclable":wastetype.Recyclable,
+// 	})
+// 	return err
+// }
