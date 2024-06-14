@@ -3,6 +3,8 @@ package wastetype
 import (
 	"admin-backend/types"
 	"context"
+	"strings"
+
 	"cloud.google.com/go/firestore"
 )
 
@@ -44,7 +46,10 @@ func(s* Store) GetAllByItem(item string) *firestore.DocumentSnapshot{
 		if err != nil{
 			break
 		}
-		if doc.Data()["item"] == item{
+		//assert item to be string
+		dbItem := doc.Data()["item"].(string)
+		//Check if item from db and input are the same regardless of case
+		if strings.EqualFold(dbItem, item){
 			return doc
 		}
 	}
