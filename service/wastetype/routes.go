@@ -19,7 +19,7 @@ func NewHandler(store types.WasteTypeStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/waste-type/create", h.handleCreate).Methods("POST")
-	// router.HandleFunc("/waste-type/update", h.handleUpdate).Methods("PUT")
+	router.HandleFunc("/waste-type/{item}", h.handleUpdate).Methods("PUT")
 	router.HandleFunc("/waste-type/{item}", h.handleDeleteItemByName).Methods("DELETE")
 	router.HandleFunc("/waste-type", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/waste-type/{item}", h.handleGetByItemName).Methods("GET", "OPTIONS")
@@ -79,7 +79,8 @@ func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// func (h* Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
-// 	var payload types.WasteType
-// 	err := json.NewDecoder(r.Body).Decode(&payload)
-// }
+func (h* Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	item, _ := vars["item"]
+	h.store.Update(item)
+}
