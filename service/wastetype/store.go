@@ -19,9 +19,11 @@ func NewStore(db *firestore.Client) *Store {
 func (s *Store) Create(wastetype types.WasteType) error{
 	wasteCollection := s.db.Collection("wasteType")
 	_,_, err := wasteCollection.Add(context.Background(), map[string]interface{}{
-		"canBePlaced":wastetype.CanBePlaced,
-		"description":wastetype.Description,
-		"itemName":wastetype.ItemName,
+		"instructions":wastetype.Instructions,
+		"item":wastetype.Item,
+		"link":wastetype.Link,
+		"material":wastetype.Material,
+		"recyclable":wastetype.Recyclable,
 	})
 	if err != nil{
 		return err

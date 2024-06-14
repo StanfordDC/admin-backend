@@ -12,7 +12,9 @@ type WasteTypeStore interface{
 }
 
 type WasteType struct{
-	CanBePlaced bool `json:"canBePlaced"`
-	Description string `json:"description"`
-	ItemName string `json:"itemName"`
+	Instructions string `json:"instructions"`
+	Item string `json:"item"`
+	Link string `json:"link"`
+	Material string `json:"material"`
+	Recyclable bool `json:"recyclable"`
 }
