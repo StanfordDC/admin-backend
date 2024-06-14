@@ -29,7 +29,7 @@ func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	err = h.store.Create(payload)
 	if err != nil{
@@ -76,7 +76,7 @@ func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 	}
 	result, err := h.store.DeleteItemByName(item)
 	if err != nil{
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Deletion failed", http.StatusInternalServerError)
 	} else if !result {
 		http.Error(w, "Waste type not found", http.StatusNotFound)
 	}
@@ -86,7 +86,7 @@ func (h* Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	err = h.store.Update(payload)
 	if err != nil{
