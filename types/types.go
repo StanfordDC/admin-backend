@@ -9,6 +9,7 @@ type WasteTypeStore interface{
 	Create(w WasteType) error
 	GetAll() *firestore.DocumentIterator
 	GetAllByItem(item string) *firestore.DocumentIterator
+	DeleteItemByName(item string) error
 }
 
 type WasteType struct{

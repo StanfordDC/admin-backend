@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
 	"github.com/gorilla/mux"
 	"google.golang.org/api/iterator"
 )
@@ -19,6 +20,7 @@ func NewHandler(store types.WasteTypeStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/waste-type/create", h.handleCreate).Methods("POST")
+	router.HandleFunc("/waste-type/{item}", h.handleDeleteItemByName).Methods("DELETE")
 	router.HandleFunc("/waste-type", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/waste-type/{item}", h.handleGetByItemName).Methods("GET", "OPTIONS")
 }
@@ -64,6 +66,11 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-// func (h* Handler) handleDeleteByName(w http.ResponseWriter, r *http.Request){
-	
-// }
+func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	item, ok := vars["item"]
+	if !ok {
+		fmt.Println("Something is wrong")
+	}
+	h.store.DeleteItemByName(item)
+}

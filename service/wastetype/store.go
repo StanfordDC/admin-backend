@@ -42,3 +42,15 @@ func(s* Store) GetAllByItem(item string) *firestore.DocumentIterator{
 	iter := wasteCollection.Documents(context.Background())
 	return iter
 }
+
+func(s* Store) DeleteItemByName(item string) error{
+	wasteCollection := s.db.Collection("wasteType")
+	iter := wasteCollection.Documents(context.Background())
+	for{
+		doc, _ := iter.Next()
+		if doc.Data()["item"] == item{
+			_, err := doc.Ref.Delete(context.Background())
+			return err
+		}
+	}
+}
