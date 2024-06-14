@@ -18,8 +18,8 @@ func NewHandler(store types.WasteTypeStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router){
-	router.HandleFunc("/waste-type/create", h.handleCreate).Methods("POST")
-	router.HandleFunc("/waste-type/{item}", h.handleUpdate).Methods("PUT")
+	router.HandleFunc("/waste-type", h.handleCreate).Methods("POST")
+	router.HandleFunc("/waste-type", h.handleUpdate).Methods("PUT")
 	router.HandleFunc("/waste-type/{item}", h.handleDeleteItemByName).Methods("DELETE")
 	router.HandleFunc("/waste-type", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/waste-type/{item}", h.handleGetByItemName).Methods("GET", "OPTIONS")
@@ -31,7 +31,10 @@ func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	if err != nil{
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	h.store.Create(payload)
+	err = h.store.Create(payload)
+	if err != nil{
+		http.Error(w, "Creation failed", http.StatusInternalServerError)
+	}
 }
 
 func (h* Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
@@ -80,7 +83,13 @@ func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 }
 
 func (h* Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
-	vars := mux.Vars(r)
-	item, _ := vars["item"]
-	h.store.Update(item)
+	var payload types.WasteType
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil{
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+	err = h.store.Update(payload)
+	if err != nil{
+		http.Error(w, "Update failed", http.StatusInternalServerError)
+	}
 }

@@ -28,10 +28,7 @@ func (s *Store) Create(wastetype types.WasteType) error{
 		"material":wastetype.Material,
 		"recyclable":wastetype.Recyclable,
 	})
-	if err != nil{
-		return err
-	}
-	return nil
+	return err
 }
 
 func (s* Store) GetAll() *firestore.DocumentIterator{
@@ -76,20 +73,15 @@ func(s* Store) DeleteItemByName(item string) (bool, error){
 	return false, nil
 }
 
-func(s* Store) Update(item string) error{
-	iter := s.GetAll()
-	for{
-		doc, err := iter.Next()
-		if err != nil{
-			break
-		} 
-		id := doc.Ref.ID
-		doc.Ref.Set(context.Background(), map[string]interface{}{
-			"id": id,
-		}, firestore.MergeAll)
-		// if doc.Data()["item"] == item{
-		// 	break
-		// }
-	}
-	return nil
+func(s* Store) Update(wastetype types.WasteType) error{
+	ref := s.db.Collection("wasteType").Doc(wastetype.Id)
+	_, err := ref.Set(context.Background(), map[string]interface{}{
+		"id":wastetype.Id,
+		"instructions":wastetype.Instructions ,
+		"item":wastetype.Item,
+		"link":wastetype.Link,
+		"material":wastetype.Material,
+		"recyclable":wastetype.Recyclable,
+	}, firestore.MergeAll)
+	return err
 }
