@@ -3,7 +3,6 @@ package wastetype
 import (
 	"admin-backend/types"
 	"context"
-
 	"cloud.google.com/go/firestore"
 )
 

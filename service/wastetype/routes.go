@@ -61,7 +61,7 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	if doc != nil{
 		json.NewEncoder(w).Encode(doc.Data())
 	} else{
-		fmt.Println("Item not found")
+		http.Error(w, "Waste type not found", http.StatusNotFound)
 	}
 }
 
