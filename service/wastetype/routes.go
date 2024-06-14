@@ -71,5 +71,10 @@ func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 	if !ok {
 		fmt.Println("Something is wrong")
 	}
-	h.store.DeleteItemByName(item)
+	result, err := h.store.DeleteItemByName(item)
+	if err != nil{
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	} else if !result {
+		http.Error(w, "Waste type not found", http.StatusNotFound)
+	}
 }

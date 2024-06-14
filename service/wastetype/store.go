@@ -56,14 +56,21 @@ func(s* Store) GetAllByItem(item string) *firestore.DocumentSnapshot{
 	return nil
 }
 
-func(s* Store) DeleteItemByName(item string) error{
+func(s* Store) DeleteItemByName(item string) (bool, error){
 	wasteCollection := s.db.Collection("wasteType")
 	iter := wasteCollection.Documents(context.Background())
 	for{
-		doc, _ := iter.Next()
-		if doc.Data()["item"] == item{
+		doc, err := iter.Next()
+		if err != nil{
+			break
+		}
+		//assert item to be string
+		dbItem := doc.Data()["item"].(string)
+		//Check if item from db and input are the same regardless of case
+		if strings.EqualFold(dbItem, item){
 			_, err := doc.Ref.Delete(context.Background())
-			return err
+			return true, err
 		}
 	}
+	return false, nil
 }
