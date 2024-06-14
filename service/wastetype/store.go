@@ -3,6 +3,7 @@ package wastetype
 import (
 	"admin-backend/types"
 	"context"
+
 	"cloud.google.com/go/firestore"
 )
 
@@ -37,10 +38,18 @@ func (s* Store) GetAll() *firestore.DocumentIterator{
 	return iter
 }
 
-func(s* Store) GetAllByItem(item string) *firestore.DocumentIterator{
-	wasteCollection := s.db.Collection("wasteType").Where("item", "==", item)
-	iter := wasteCollection.Documents(context.Background())
-	return iter
+func(s* Store) GetAllByItem(item string) *firestore.DocumentSnapshot{
+	iter := s.GetAll()
+	for{
+		doc, err := iter.Next()
+		if err != nil{
+			break
+		}
+		if doc.Data()["item"] == item{
+			return doc
+		}
+	}
+	return nil
 }
 
 func(s* Store) DeleteItemByName(item string) error{

@@ -57,12 +57,11 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	if !ok {
 		fmt.Println("Something is wrong")
 	}
-	iter := h.store.GetAllByItem(item)
-	
-	for {
-		doc, _ := iter.Next()
+	doc := h.store.GetAllByItem(item)
+	if doc != nil{
 		json.NewEncoder(w).Encode(doc.Data())
-		break
+	} else{
+		fmt.Println("Item not found")
 	}
 }
 

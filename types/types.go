@@ -8,7 +8,7 @@ import (
 type WasteTypeStore interface{
 	Create(w WasteType) error
 	GetAll() *firestore.DocumentIterator
-	GetAllByItem(item string) *firestore.DocumentIterator
+	GetAllByItem(item string) *firestore.DocumentSnapshot
 	DeleteItemByName(item string) error
 }
 
