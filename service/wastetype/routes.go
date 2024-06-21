@@ -69,6 +69,7 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	item, ok := vars["item"]
 	if !ok {
@@ -83,6 +84,7 @@ func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 }
 
 func (h* Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
