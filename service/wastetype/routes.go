@@ -26,6 +26,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router){
 }
 
 func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
