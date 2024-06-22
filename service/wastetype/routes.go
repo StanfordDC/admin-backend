@@ -20,7 +20,7 @@ func NewHandler(store types.WasteTypeStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/waste-type", h.handleCreate).Methods("POST")
 	router.HandleFunc("/waste-type", h.handleUpdate).Methods("PUT")
-	router.HandleFunc("/waste-type/{item}", h.handleDeleteItemByName).Methods("DELETE")
+	router.HandleFunc("/waste-type/{item}", h.handleDeleteItemByName).Methods("DELETE", "OPTIONS")
 	router.HandleFunc("/waste-type", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/waste-type/{item}", h.handleGetByItemName).Methods("GET", "OPTIONS")
 }
@@ -69,8 +69,8 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Methods", "DELETE") 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
 	vars := mux.Vars(r)
 	item, ok := vars["item"]
 	if !ok {
