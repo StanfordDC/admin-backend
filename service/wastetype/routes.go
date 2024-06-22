@@ -69,6 +69,7 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	vars := mux.Vars(r)
 	item, ok := vars["item"]
