@@ -19,7 +19,7 @@ func NewHandler(store types.WasteTypeStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/waste-type", h.handleCreate).Methods("POST")
-	router.HandleFunc("/waste-type", h.handleUpdate).Methods("PUT")
+	router.HandleFunc("/waste-type", h.handleUpdate).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/waste-type/{item}", h.handleDeleteItemByName).Methods("DELETE", "OPTIONS")
 	router.HandleFunc("/waste-type", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/waste-type/{item}", h.handleGetByItemName).Methods("GET", "OPTIONS")
@@ -38,7 +38,7 @@ func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h* Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
+func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	iter := h.store.GetAll()
 	var items []types.WasteType
@@ -54,7 +54,7 @@ func (h* Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(items)
 }
 
-func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
+func (h *Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	item, ok := vars["item"]
@@ -69,7 +69,7 @@ func (h* Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
+func (h *Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Methods", "DELETE") 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
@@ -85,7 +85,7 @@ func (h* Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (h* Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
+func (h *Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)

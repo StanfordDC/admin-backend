@@ -31,13 +31,13 @@ func (s *Store) Create(wastetype types.WasteType) error{
 	return err
 }
 
-func (s* Store) GetAll() *firestore.DocumentIterator{
+func (s *Store) GetAll() *firestore.DocumentIterator{
 	wasteCollection := s.db.Collection("wasteType")
 	iter := wasteCollection.Documents(context.Background())
 	return iter
 }
 
-func(s* Store) GetAllByItem(item string) *firestore.DocumentSnapshot{
+func(s *Store) GetAllByItem(item string) *firestore.DocumentSnapshot{
 	iter := s.GetAll()
 	for{
 		doc, err := iter.Next()
@@ -54,7 +54,7 @@ func(s* Store) GetAllByItem(item string) *firestore.DocumentSnapshot{
 	return nil
 }
 
-func(s* Store) DeleteItemByName(item string) (bool, error){
+func(s *Store) DeleteItemByName(item string) (bool, error){
 	wasteCollection := s.db.Collection("wasteType")
 	iter := wasteCollection.Documents(context.Background())
 	for{
@@ -73,7 +73,7 @@ func(s* Store) DeleteItemByName(item string) (bool, error){
 	return false, nil
 }
 
-func(s* Store) Update(wastetype types.WasteType) error{
+func(s *Store) Update(wastetype types.WasteType) error{
 	ref := s.db.Collection("wasteType").Doc(wastetype.Id)
 	_, err := ref.Set(context.Background(), map[string]interface{}{
 		"id":wastetype.Id,
