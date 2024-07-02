@@ -4,6 +4,11 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
+type WastetypeResponse struct{
+	Id string `json:"id"`
+	Base64Image string `json:"base64image"`
+	DetectedObjects map[string]bool `json:"detectedObjects"`
+}
 
 type WasteTypeStore interface{
 	Create(w WasteType) error
