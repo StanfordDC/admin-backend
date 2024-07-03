@@ -7,7 +7,11 @@ import (
 type WastetypeResponse struct{
 	Id string `json:"id"`
 	Base64Image string `json:"base64image"`
-	DetectedObjects map[string]bool `json:"detectedObjects"`
+	Objects map[string]int `json:"objects"`
+}
+
+type WastetypeResponseStore interface{
+	
 }
 
 type WasteTypeStore interface{
