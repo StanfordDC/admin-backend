@@ -5,8 +5,7 @@ import (
 )
 
 type WastetypeResponse struct{
-	Id string `json:"id"`
-	Base64Image string `json:"base64image"`
+	Base64Encoding string `json:"base64Encoding"`
 	Objects map[string]int `json:"objects"`
 }
 
