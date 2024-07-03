@@ -11,7 +11,7 @@ type WastetypeResponse struct{
 }
 
 type WastetypeResponseStore interface{
-	
+	GetAll() *firestore.DocumentIterator
 }
 
 type WasteTypeStore interface{
