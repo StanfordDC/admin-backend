@@ -2,6 +2,7 @@ package api
 
 import (
 	wastetype "admin-backend/service/wastetype"
+	wastetypeResponse "admin-backend/service/wastetypeResponse"
 	"net/http"
 
 	"cloud.google.com/go/firestore"
@@ -25,5 +26,9 @@ func (s *APIServer) Run() error {
 	wastetypeStore := wastetype.NewStore(s.db)
 	wastetypeHandler := wastetype.NewHandler(wastetypeStore)
 	wastetypeHandler.RegisterRoutes(router)
+	
+	wastetypeResponseStore := wastetypeResponse.NewStore(s.db)
+	wastetypeResponseHandler := wastetypeResponse.NewHandler(wastetypeResponseStore)
+	wastetypeResponseHandler.RegisterRoutes(router)
 	return http.ListenAndServe(s.addr, router)
 }
