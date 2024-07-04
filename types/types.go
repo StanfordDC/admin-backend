@@ -25,7 +25,7 @@ type WasteType struct{
 	Id string `json:"id"`
 	Instructions string `json:"instructions"`
 	Item string `json:"item"`
-	Link string `json:"link"`
+	Links []string `json:"links"`
 	Material string `json:"material"`
 	Recyclable bool `json:"recyclable"`
 }
