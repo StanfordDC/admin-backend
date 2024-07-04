@@ -24,7 +24,7 @@ func (s *Store) Create(wastetype types.WasteType) error{
 		"id" : ref.ID,
 		"instructions":wastetype.Instructions,
 		"item":wastetype.Item,
-		"link":wastetype.Links,
+		"links":wastetype.Links,
 		"material":wastetype.Material,
 		"recyclable":wastetype.Recyclable,
 	})
@@ -79,7 +79,7 @@ func(s *Store) Update(wastetype types.WasteType) error{
 		"id":wastetype.Id,
 		"instructions":wastetype.Instructions ,
 		"item":wastetype.Item,
-		"link":wastetype.Links,
+		"links":wastetype.Links,
 		"material":wastetype.Material,
 		"recyclable":wastetype.Recyclable,
 	}, firestore.MergeAll)
