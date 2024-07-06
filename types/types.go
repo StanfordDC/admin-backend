@@ -11,6 +11,12 @@ type User struct{
 	Email string `json:"email"`
 }
 
+type UserStore interface{
+	GetAllUsers() *firestore.DocumentIterator
+	CreateUser(user User) error
+	UpdateUser(user User) error
+}
+
 type WastetypeResponse struct{
 	ImageUrl string `json:"imageUrl"`
 	Objects map[string]int `json:"objects"`

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"admin-backend/service/user"
 	wastetype "admin-backend/service/wastetype"
 	wastetypeResponse "admin-backend/service/wastetypeResponse"
 	"net/http"
@@ -30,5 +31,9 @@ func (s *APIServer) Run() error {
 	wastetypeResponseStore := wastetypeResponse.NewStore(s.db)
 	wastetypeResponseHandler := wastetypeResponse.NewHandler(wastetypeResponseStore)
 	wastetypeResponseHandler.RegisterRoutes(router)
+
+	userStore := user.NewStore(s.db)
+	userHandler := user.NewHandler(userStore)
+	userHandler.RegisterRoutes(router)
 	return http.ListenAndServe(s.addr, router)
 }
