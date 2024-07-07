@@ -46,6 +46,9 @@ func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	if h.store.CheckIfUserExists(payload.Email) {
+		http.Error(w, "Email has been used", http.StatusBadRequest)
+	}
 	err = h.store.CreateUser(payload)
 	if err != nil{
 		http.Error(w, "Creation failed", http.StatusInternalServerError)

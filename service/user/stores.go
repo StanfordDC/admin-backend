@@ -3,8 +3,9 @@ package user
 import (
 	"admin-backend/types"
 	"context"
-
+	"strings"
 	"cloud.google.com/go/firestore"
+	"google.golang.org/api/iterator"
 )
 
 type Store struct {
@@ -32,6 +33,24 @@ func (s *Store) CreateUser(user types.User) error{
 		"email" : user.Email,
 	})
 	return err
+}
+
+func (s* Store) CheckIfUserExists(email string) bool{
+	users := s.db.Collection("user")
+	iter := users.Documents(context.Background())
+	for{
+		doc, err := iter.Next()
+		if err == iterator.Done{
+			break
+		}
+		//assert item to be string
+		target := doc.Data()["email"].(string)
+		//Check if email from db and input are the same regardless of case
+		if strings.EqualFold(target, email){
+			return true
+		}
+	}
+	return false
 }
 
 func (s* Store) UpdateUser(user types.User) error{

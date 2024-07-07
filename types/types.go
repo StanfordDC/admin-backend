@@ -15,6 +15,7 @@ type UserStore interface{
 	GetAllUsers() *firestore.DocumentIterator
 	CreateUser(user User) error
 	UpdateUser(user User) error
+	CheckIfUserExists(email string) bool
 }
 
 type WastetypeResponse struct{
