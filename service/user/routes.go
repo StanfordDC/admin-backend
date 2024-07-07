@@ -1,6 +1,7 @@
 package user
 
 import (
+	"admin-backend/service/auth"
 	"admin-backend/types"
 	"encoding/json"
 	"net/http"
@@ -49,6 +50,7 @@ func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
 	if h.store.CheckIfUserExists(payload.Email) {
 		http.Error(w, "Email has been used", http.StatusBadRequest)
 	}
+	payload.Password = auth.HashPassword(payload.Password)
 	err = h.store.CreateUser(payload)
 	if err != nil{
 		http.Error(w, "Creation failed", http.StatusInternalServerError)
