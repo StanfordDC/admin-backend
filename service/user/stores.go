@@ -63,3 +63,22 @@ func (s* Store) UpdateUser(user types.User) error{
 	}, firestore.MergeAll)
 	return err
 }
+
+func (s* Store) DeleteUserByEmail(email string) (bool, error){
+	users := s.db.Collection("user")
+	iter := users.Documents(context.Background())
+	for{
+		doc, err := iter.Next()
+		if err != nil{
+			break
+		}
+		//assert item to be string
+		target := doc.Data()["email"].(string)
+		//Check if item from db and input are the same regardless of case
+		if strings.EqualFold(target, email){
+			_, err := doc.Ref.Delete(context.Background())
+			return true, err
+		}
+	}
+	return false, nil
+}

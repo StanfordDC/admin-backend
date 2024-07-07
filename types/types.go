@@ -16,6 +16,7 @@ type UserStore interface{
 	CreateUser(user User) error
 	UpdateUser(user User) error
 	CheckIfUserExists(email string) bool
+	DeleteUserByEmail(email string) (bool, error)
 }
 
 type WastetypeResponse struct{

@@ -22,6 +22,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/user", h.getAllUsers).Methods("GET","OPTIONS")
 	router.HandleFunc("/user", h.createUser).Methods("POST")
 	router.HandleFunc("/user", h.updateUser).Methods("PUT", "OPTIONS")
+	router.HandleFunc("/user/{email}", h.deleteUserByEmail).Methods("DELETE", "OPTIONS")
 }
 
 func (h* Handler) getAllUsers(w http.ResponseWriter,  r *http.Request){
@@ -75,3 +76,18 @@ func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+func (h* Handler) deleteUserByEmail(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Methods", "DELETE") 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	vars := mux.Vars(r)
+	email, ok := vars["email"]
+	if !ok{
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+	result, err := h.store.DeleteUserByEmail(email)
+	if err != nil{
+		http.Error(w, "Deletion failed", http.StatusInternalServerError)
+	} else if !result {
+		http.Error(w, "No user found with this email", http.StatusNotFound)
+	}
+}
