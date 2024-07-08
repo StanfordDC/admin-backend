@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	"cloud.google.com/go/firestore"
 )
 
@@ -22,6 +24,7 @@ type UserStore interface{
 type WastetypeResponse struct{
 	ImageUrl string `json:"imageUrl"`
 	Objects map[string]int `json:"objects"`
+	CreateTime time.Time `json:"createTime"`
 }
 
 type WastetypeResponseStore interface{

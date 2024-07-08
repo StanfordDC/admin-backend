@@ -31,8 +31,10 @@ func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 		if err == iterator.Done {
 				break
 		}
+		createTime := doc.CreateTime
 		var item types.WastetypeResponse
 		doc.DataTo(&item)
+		item.CreateTime = createTime
 		items = append(items, item)
 	}
 	json.NewEncoder(w).Encode(items)
