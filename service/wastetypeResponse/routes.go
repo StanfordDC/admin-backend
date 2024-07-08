@@ -4,7 +4,6 @@ import (
 	"admin-backend/types"
 	"encoding/json"
 	"net/http"
-	"fmt"
 	"github.com/gorilla/mux"
 	"google.golang.org/api/iterator"
 )
@@ -69,20 +68,34 @@ func (h *Handler) handleGetMetrics(w http.ResponseWriter, r *http.Request){
 func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	iter := h.store.GetAll()
-	months := map[string]map[string]int{
-        "january":   {"good": 0, "bad": 0, "feature": 0},
-        "february":  {"good": 0, "bad": 0, "feature": 0},
-        "march":     {"good": 0, "bad": 0, "feature": 0},
-        "april":     {"good": 0, "bad": 0, "feature": 0},
-        "may":       {"good": 0, "bad": 0, "feature": 0},
-        "june":      {"good": 0, "bad": 0, "feature": 0},
-        "july":      {"good": 0, "bad": 0, "feature": 0},
-        "august":    {"good": 0, "bad": 0, "feature": 0},
-        "september": {"good": 0, "bad": 0, "feature": 0},
-        "october":   {"good": 0, "bad": 0, "feature": 0},
-        "november":  {"good": 0, "bad": 0, "feature": 0},
-        "december":  {"good": 0, "bad": 0, "feature": 0},
-    }
+	months := []map[string]int{
+		{"month": 1, "good": 0, "bad": 0, "feature": 0},
+		{"month": 2, "good": 0, "bad": 0, "feature": 0},
+		{"month": 3, "good": 0, "bad": 0, "feature": 0},
+		{"month": 4, "good": 0, "bad": 0, "feature": 0},
+		{"month": 5, "good": 0, "bad": 0, "feature": 0},
+		{"month": 6, "good": 0, "bad": 0, "feature": 0},
+		{"month": 7, "good": 0, "bad": 0, "feature": 0},
+		{"month": 8, "good": 0, "bad": 0, "feature": 0},
+		{"month": 9, "good": 0, "bad": 0, "feature": 0},
+		{"month": 10, "good": 0, "bad": 0, "feature": 0},
+		{"month": 11, "good": 0, "bad": 0, "feature": 0},
+		{"month": 12, "good": 0, "bad": 0, "feature": 0},
+	}
+	index := map[string]int{
+		"January":   0,
+		"February":  1,
+		"March":     2,
+		"April":     3,
+		"May":       4,
+		"June":      5,
+		"July":      6,
+		"August":    7,
+		"September": 8,
+		"October":   9,
+		"November":  10,
+		"December":  11,
+	}
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -93,16 +106,14 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 
 		//Get the created month
 		month := doc.CreateTime.Month().String()
-		month = string(month[0]) + month[1:]
-		month = fmt.Sprintf("%s%s", string(month[0]|0x20), month[1:])
 
-		months[month]["feature"]++
+		months[index[month]]["feature"]++
 		objects := item.Objects
 		for _, value := range objects{
 			if value == 1 {
-				months[month]["good"]++
+				months[index[month]]["good"]++
 			} else if value == 2 {
-				months[month]["bad"]++
+				months[index[month]]["bad"]++
 			}
 		} 
 	}
