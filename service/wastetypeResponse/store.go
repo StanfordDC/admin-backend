@@ -17,7 +17,7 @@ func NewStore(db *firestore.Client) *Store {
 }
 
 func (s *Store) GetAll() *firestore.DocumentIterator{
-	responseCollection := s.db.Collection("wastetypeResponse")
+	responseCollection := s.db.Collection("wasteTypeFeedback")
 	iter := responseCollection.Documents(context.Background())
 	return iter
 }

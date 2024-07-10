@@ -21,9 +21,15 @@ type UserStore interface{
 	DeleteUserByEmail(email string) (bool, error)
 }
 
+type WasteTypeFeedback struct{
+	Item string `json:"item"`
+	Feedback int `json:"feedback"`
+	Source string `json:"source"`
+}
+
 type WastetypeResponse struct{
 	ImageUrl string `json:"imageUrl"`
-	Objects map[string]int `json:"objects"`
+	Items []WasteTypeFeedback `json:"items"`
 	CreateTime time.Time `json:"createTime"`
 }
 
