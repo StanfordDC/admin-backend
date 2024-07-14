@@ -60,6 +60,7 @@ func (h *Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 	item, ok := vars["item"]
 	if !ok {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	doc := h.store.GetAllByItem(item)
 	if doc != nil{
@@ -76,6 +77,7 @@ func (h *Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 	item, ok := vars["item"]
 	if !ok {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	result, err := h.store.DeleteItemByName(item)
 	if err != nil{
@@ -96,6 +98,7 @@ func (h *Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	err = h.store.Update(payload)
 	if err != nil{

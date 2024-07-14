@@ -48,9 +48,11 @@ func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	if h.store.GetUserByUsername(payload.Username) != nil {
 		http.Error(w, "Username has been used", http.StatusBadRequest)
+		return
 	}
 	payload.Password = auth.HashPassword(payload.Password)
 	err = h.store.CreateUser(payload)
@@ -70,6 +72,7 @@ func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	err = h.store.UpdateUser(payload)
 	if err != nil{
@@ -84,6 +87,7 @@ func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
 	username, ok := vars["username"]
 	if !ok{
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	result, err := h.store.DeleteUserByUsername(username)
 	if err != nil{
@@ -103,9 +107,11 @@ func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
 	user := h.store.GetUserByUsername(payload.Username)
 	if user == nil {
 		http.Error(w, "Username does not exist", http.StatusNotFound)
+		return
 	}
 	if !auth.ComparePassword(user.Data()["password"].(string), []byte(payload.Password)) {
 		http.Error(w, "Wrong password", http.StatusUnauthorized)
+		return
 	}
 	json.NewEncoder(w).Encode("")
 }
