@@ -34,7 +34,7 @@ func (s *Store) CreateUser(user types.User) error{
 	return err
 }
 
-func (s* Store) CheckIfUserExists(username string) bool{
+func (s* Store) GetUserByUsername(username string) *firestore.DocumentSnapshot{
 	users := s.db.Collection("user")
 	iter := users.Documents(context.Background())
 	for{
@@ -46,10 +46,10 @@ func (s* Store) CheckIfUserExists(username string) bool{
 		target := doc.Data()["username"].(string)
 		//Check if email from db and input are the same regardless of case
 		if strings.EqualFold(target, username){
-			return true
+			return doc
 		}
 	}
-	return false
+	return nil
 }
 
 func (s* Store) UpdateUser(user types.User) error{

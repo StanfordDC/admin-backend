@@ -16,7 +16,7 @@ type UserStore interface{
 	GetAllUsers() *firestore.DocumentIterator
 	CreateUser(user User) error
 	UpdateUser(user User) error
-	CheckIfUserExists(username string) bool
+	GetUserByUsername(username string) *firestore.DocumentSnapshot
 	DeleteUserByUsername(username string) (bool, error)
 }
 
