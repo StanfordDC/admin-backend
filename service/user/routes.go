@@ -21,7 +21,7 @@ func NewHandler(store types.UserStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/user", h.getAllUsers).Methods("GET","OPTIONS")
 	router.HandleFunc("/user", h.createUser).Methods("POST")
-	// router.HandleFunc("/user/login", h.userLogin).Methods("POST")
+	router.HandleFunc("/user/login", h.userLogin).Methods("POST")
 	router.HandleFunc("/user", h.updateUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/user/{username}", h.deleteUserByUsername).Methods("DELETE", "OPTIONS")
 }
@@ -93,19 +93,19 @@ func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-// func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
-// 	w.Header().Set("Access-Control-Allow-Origin", "*")
-// 	var payload types.User
-// 	err := json.NewDecoder(r.Body).Decode(&payload)
-// 	if err != nil{
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 	}
-// 	if !h.store.CheckIfUserExists(payload.Username) {
-// 		http.Error(w, "Username does not exist", http.StatusNotFound)
-// 	}
-// 	payload.Password = auth.HashPassword(payload.Password)
-// 	err = h.store.CreateUser(payload)
-// 	if err != nil{
-// 		http.Error(w, "Creation failed", http.StatusInternalServerError)
-// 	}
-// }
+func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	var payload types.User
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	user := h.store.GetUserByUsername(payload.Username)
+	if user == nil {
+		http.Error(w, "Username does not exist", http.StatusNotFound)
+	}
+	if !auth.ComparePassword(user.Data()["password"].(string), []byte(payload.Password)) {
+		http.Error(w, "Wrong password", http.StatusUnauthorized)
+	}
+	json.NewEncoder(w).Encode("")
+}
