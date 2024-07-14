@@ -30,12 +30,11 @@ func (s *Store) CreateUser(user types.User) error{
 		"id" : ref.ID,
 		"username" : user.Username,
 		"password" : user.Password,
-		"email" : user.Email,
 	})
 	return err
 }
 
-func (s* Store) CheckIfUserExists(email string) bool{
+func (s* Store) CheckIfUserExists(username string) bool{
 	users := s.db.Collection("user")
 	iter := users.Documents(context.Background())
 	for{
@@ -44,9 +43,9 @@ func (s* Store) CheckIfUserExists(email string) bool{
 			break
 		}
 		//assert item to be string
-		target := doc.Data()["email"].(string)
+		target := doc.Data()["username"].(string)
 		//Check if email from db and input are the same regardless of case
-		if strings.EqualFold(target, email){
+		if strings.EqualFold(target, username){
 			return true
 		}
 	}
@@ -59,12 +58,11 @@ func (s* Store) UpdateUser(user types.User) error{
 		"id":user.Id,
 		"username" : user.Username,
 		"password" : user.Password,
-		"email" : user.Email,
 	}, firestore.MergeAll)
 	return err
 }
 
-func (s* Store) DeleteUserByEmail(email string) (bool, error){
+func (s* Store) DeleteUserByUsername(username string) (bool, error){
 	users := s.db.Collection("user")
 	iter := users.Documents(context.Background())
 	for{
@@ -73,9 +71,9 @@ func (s* Store) DeleteUserByEmail(email string) (bool, error){
 			break
 		}
 		//assert item to be string
-		target := doc.Data()["email"].(string)
+		target := doc.Data()["username"].(string)
 		//Check if item from db and input are the same regardless of case
-		if strings.EqualFold(target, email){
+		if strings.EqualFold(target, username){
 			_, err := doc.Ref.Delete(context.Background())
 			return true, err
 		}

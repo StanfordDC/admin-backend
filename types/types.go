@@ -10,15 +10,14 @@ type User struct{
 	Id string `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
-	Email string `json:"email"`
 }
 
 type UserStore interface{
 	GetAllUsers() *firestore.DocumentIterator
 	CreateUser(user User) error
 	UpdateUser(user User) error
-	CheckIfUserExists(email string) bool
-	DeleteUserByEmail(email string) (bool, error)
+	CheckIfUserExists(username string) bool
+	DeleteUserByUsername(username string) (bool, error)
 }
 
 type WasteTypeFeedback struct{

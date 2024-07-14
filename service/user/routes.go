@@ -22,7 +22,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/user", h.getAllUsers).Methods("GET","OPTIONS")
 	router.HandleFunc("/user", h.createUser).Methods("POST")
 	router.HandleFunc("/user", h.updateUser).Methods("PUT", "OPTIONS")
-	router.HandleFunc("/user/{email}", h.deleteUserByEmail).Methods("DELETE", "OPTIONS")
+	router.HandleFunc("/user/{username}", h.DeleteUserByUsername).Methods("DELETE", "OPTIONS")
 }
 
 func (h* Handler) getAllUsers(w http.ResponseWriter,  r *http.Request){
@@ -48,8 +48,8 @@ func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	if h.store.CheckIfUserExists(payload.Email) {
-		http.Error(w, "Email has been used", http.StatusBadRequest)
+	if h.store.CheckIfUserExists(payload.Username) {
+		http.Error(w, "Username has been used", http.StatusBadRequest)
 	}
 	payload.Password = auth.HashPassword(payload.Password)
 	err = h.store.CreateUser(payload)
@@ -76,18 +76,18 @@ func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func (h* Handler) deleteUserByEmail(w http.ResponseWriter, r *http.Request){
+func (h* Handler) DeleteUserByUsername(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Methods", "DELETE") 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
-	email, ok := vars["email"]
+	username, ok := vars["username"]
 	if !ok{
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	result, err := h.store.DeleteUserByEmail(email)
+	result, err := h.store.DeleteUserByUsername(username)
 	if err != nil{
 		http.Error(w, "Deletion failed", http.StatusInternalServerError)
 	} else if !result {
-		http.Error(w, "No user found with this email", http.StatusNotFound)
+		http.Error(w, "No user found with this username", http.StatusNotFound)
 	}
 }
