@@ -1,8 +1,6 @@
 package auth
 
 import (
-	// "admin-backend/types"
-	// "net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -20,9 +18,3 @@ func CreateJWT(secret []byte, id string) (string, error) {
 	}
 	return tokenString, nil
 }
-
-// func WithJWTAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFunc{
-// 	return func(w http.ResponseWriter, r * http.Request){
-
-// 	}
-// }
