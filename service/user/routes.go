@@ -113,5 +113,11 @@ func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
 		http.Error(w, "Wrong password", http.StatusUnauthorized)
 		return
 	}
-	json.NewEncoder(w).Encode("")
+	secret := []byte("secret")
+	token, err := auth.CreateJWT(secret, user.Data()["id"].(string))
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]string{"token":token})
 }
