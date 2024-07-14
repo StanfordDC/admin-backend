@@ -21,7 +21,7 @@ func NewHandler(store types.UserStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/user", h.getAllUsers).Methods("GET","OPTIONS")
 	router.HandleFunc("/user", h.createUser).Methods("POST")
-	router.HandleFunc("/user/login", h.userLogin).Methods("POST")
+	router.HandleFunc("/user/login", h.userLogin).Methods("POST","OPTIONS")
 	router.HandleFunc("/user", h.updateUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/user/{username}", h.deleteUserByUsername).Methods("DELETE", "OPTIONS")
 }
@@ -98,7 +98,13 @@ func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "POST") 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	var payload types.User
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
