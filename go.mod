@@ -1,6 +1,6 @@
 module admin-backend
 
-go 1.22.2
+go 1.22.1
 
 require (
 	cloud.google.com/go/firestore v1.15.0
