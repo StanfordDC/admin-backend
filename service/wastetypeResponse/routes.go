@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"google.golang.org/api/iterator"
+	"strconv"
 )
 
 type Handler struct {
@@ -19,7 +20,7 @@ func NewHandler(store types.WastetypeResponseStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/responses", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/responses/metrics", h.handleGetMetrics).Methods("GET", "OPTIONS")
-	router.HandleFunc("/responses/history", h.handleGetHistory).Methods("GET","OPTIONS")
+	router.HandleFunc("/responses/history/{year}", h.handleGetHistory).Methods("GET","OPTIONS")
 }
 
 func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
@@ -67,6 +68,12 @@ func (h *Handler) handleGetMetrics(w http.ResponseWriter, r *http.Request){
 
 func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	vars := mux.Vars(r)
+	year, ok := strconv.Atoi(vars["year"])
+	if ok != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 	iter := h.store.GetAll()
 	months := []map[string]int{
 		{"month": 1, "good": 0, "bad": 0, "feature": 0},
@@ -104,6 +111,10 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		var item types.WastetypeResponse
 		doc.DataTo(&item)
 
+		createdYear := doc.CreateTime.Year()
+		if createdYear != year {
+			continue
+		}
 		//Get the created month
 		month := doc.CreateTime.Month().String()
 
