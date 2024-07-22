@@ -68,9 +68,9 @@ func (h *Handler) handleGetMetrics(w http.ResponseWriter, r *http.Request){
 
 func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	vars := mux.Vars(r)
-	year, ok := strconv.Atoi(vars["year"])
-	if ok != nil {
+	var payload types.WasteTypeResponseRange
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}

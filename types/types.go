@@ -33,10 +33,10 @@ type WastetypeResponse struct{
 }
 
 type WasteTypeResponseRange struct{
-	StartYear string `json:"startYear"`
-	StartMonth string `json:"startMonth"`
-	EndYear string `json:"endYear"`
-	EndMonth string `json:"endMonth"`
+	StartYear int `json:"startYear"`
+	StartMonth int `json:"startMonth"`
+	EndYear int `json:"endYear"`
+	EndMonth int `json:"endMonth"`
 }
 
 type WastetypeResponseStore interface{
