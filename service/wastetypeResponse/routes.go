@@ -80,7 +80,7 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 	endMonth := payload.EndMonth
 	iter := h.store.GetAll()
 	totalMonths := (endYear - startYear) * 12
-	totalMonths += endMonth - startMonth
+	totalMonths += endMonth - startMonth + 1
 	metrics := make([]types.WasteTypeResponseMetric, totalMonths)
 	currentYear := startYear
 	currentMonth := startMonth
@@ -100,18 +100,18 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
         }
     }
 	indices := map[string]int{
-		"January":   0,
-		"February":  1,
-		"March":     2,
-		"April":     3,
-		"May":       4,
-		"June":      5,
-		"July":      6,
-		"August":    7,
-		"September": 8,
-		"October":   9,
-		"November":  10,
-		"December":  11,
+		"January":   1,
+		"February":  2,
+		"March":     3,
+		"April":     4,
+		"May":       5,
+		"June":      6,
+		"July":      7,
+		"August":    8,
+		"September": 9,
+		"October":   10,
+		"November":  11,
+		"December":  12,
 	}
 	for {
 		doc, err := iter.Next()
@@ -129,7 +129,7 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		if year == startYear && month < time.Month(startMonth) || year == endYear && month > time.Month(endMonth){
 			continue
 		}
-		index := (year - startYear) * 12 + startMonth - indices[month.String()]
+		index := (year - startYear) * 12 + indices[month.String()] - startMonth
 		metrics[index].Feature++
 		objects := item.Items
 		for _, obj := range objects{
