@@ -39,6 +39,14 @@ type WasteTypeResponseRange struct{
 	EndMonth int `json:"endMonth"`
 }
 
+type WasteTypeResponseMetric struct{
+	Year int `json:"year"`
+	Month int `json:"month"`
+	Good int `json:"good"`
+	Bad int `json:"bad"`
+	Feature int `json:"feature"`
+}
+
 type WastetypeResponseStore interface{
 	GetAll() *firestore.DocumentIterator
 }

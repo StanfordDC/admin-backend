@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"google.golang.org/api/iterator"
-	"strconv"
+	"time"
 )
 
 type Handler struct {
@@ -74,20 +74,44 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+	startYear := payload.StartYear
+	endYear := payload.EndYear
+	startMonth := payload.StartMonth
+	endMonth := payload.EndMonth
 	iter := h.store.GetAll()
-	months := []map[string]int{
-		{"month": 1, "good": 0, "bad": 0, "feature": 0},
-		{"month": 2, "good": 0, "bad": 0, "feature": 0},
-		{"month": 3, "good": 0, "bad": 0, "feature": 0},
-		{"month": 4, "good": 0, "bad": 0, "feature": 0},
-		{"month": 5, "good": 0, "bad": 0, "feature": 0},
-		{"month": 6, "good": 0, "bad": 0, "feature": 0},
-		{"month": 7, "good": 0, "bad": 0, "feature": 0},
-		{"month": 8, "good": 0, "bad": 0, "feature": 0},
-		{"month": 9, "good": 0, "bad": 0, "feature": 0},
-		{"month": 10, "good": 0, "bad": 0, "feature": 0},
-		{"month": 11, "good": 0, "bad": 0, "feature": 0},
-		{"month": 12, "good": 0, "bad": 0, "feature": 0},
+	totalMonths := (endYear - startYear) * 12
+	totalMonths += endMonth - startMonth
+	metrics := make([]types.WasteTypeResponseMetric, totalMonths)
+	currentYear := startYear
+	currentMonth := startMonth
+	for i := 0; i < totalMonths; i++ {
+        metrics[i] = types.WasteTypeResponseMetric{
+            Year:    currentYear,
+            Month:   currentMonth,
+            Good:    0, // Initialize Good with 0 or other default value
+            Bad:     0, // Initialize Bad with 0 or other default value
+            Feature: 0, // Initialize Feature with 0 or other default value
+        }
+        // Increment month and adjust year if necessary
+        currentMonth++
+        if currentMonth > 12 {
+            currentMonth = 1
+            currentYear++
+        }
+    }
+	indices := map[string]int{
+		"January":   0,
+		"February":  1,
+		"March":     2,
+		"April":     3,
+		"May":       4,
+		"June":      5,
+		"July":      6,
+		"August":    7,
+		"September": 8,
+		"October":   9,
+		"November":  10,
+		"December":  11,
 	}
 	for {
 		doc, err := iter.Next()
@@ -97,22 +121,24 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		var item types.WastetypeResponse
 		doc.DataTo(&item)
 
-		createdYear := doc.CreateTime.Year()
-		if createdYear != year {
+		year := doc.CreateTime.Year()
+		month := doc.CreateTime.Month()
+		if year < startYear || year > endYear{
 			continue
 		}
-		//Get the created month
-		month := doc.CreateTime.Month()
-
-		months[month-1]["feature"]++
+		if year == startYear && month < time.Month(startMonth) || year == endYear && month > time.Month(endMonth){
+			continue
+		}
+		index := (year - startYear) * 12 + startMonth - indices[month.String()]
+		metrics[index].Feature++
 		objects := item.Items
 		for _, obj := range objects{
 			if obj.Feedback == 1 {
-				months[month-1]["good"]++
+				metrics[index].Good++
 			} else if obj.Feedback == 2 {
-				months[month-1]["bad"]++
+				metrics[index].Bad++
 			}
 		} 
 	}
-	json.NewEncoder(w).Encode(months)
+	json.NewEncoder(w).Encode(metrics)
 }
