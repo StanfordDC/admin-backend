@@ -74,17 +74,42 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	startYear := payload.StartYear
-	endYear := payload.EndYear
-	startMonth := payload.StartMonth
-	endMonth := payload.EndMonth
 	iter := h.store.GetAll()
-	totalMonths := (endYear - startYear) * 12
-	totalMonths += endMonth - startMonth + 1
-	metrics := make([]types.WasteTypeResponseMetric, totalMonths)
-	currentYear := startYear
-	currentMonth := startMonth
-	for i := 0; i < totalMonths; i++ {
+	totalMonths := getTotalMonths(payload)
+	metrics := initializeMetrics(payload, totalMonths)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+				break
+		}
+		var item types.WastetypeResponse
+		doc.DataTo(&item)
+
+		year := doc.CreateTime.Year()
+		month := doc.CreateTime.Month()
+		if !checkIfCreatedTimeIsValid(year, month, payload){
+			continue
+		}
+		index := getIndex(year, month, payload)
+		metrics[index].Feature++
+		objects := item.Items
+		for _, obj := range objects{
+			if obj.Feedback == 1 {
+				metrics[index].Good++
+			} else if obj.Feedback == 2 {
+				metrics[index].Bad++
+			}
+		} 
+	}
+	json.NewEncoder(w).Encode(metrics)
+}
+
+func initializeMetrics(payload types.WasteTypeResponseRange, totalMonths int) []types.WasteTypeResponseMetric {
+    metrics := make([]types.WasteTypeResponseMetric, totalMonths)
+    currentYear := payload.StartYear
+    currentMonth := payload.StartMonth
+
+    for i := 0; i < totalMonths; i++ {
         metrics[i] = types.WasteTypeResponseMetric{
             Year:    currentYear,
             Month:   currentMonth,
@@ -99,6 +124,35 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
             currentYear++
         }
     }
+
+    return metrics
+}
+
+func getTotalMonths(payload types.WasteTypeResponseRange) int{
+	startYear := payload.StartYear
+	endYear := payload.EndYear
+	startMonth := payload.StartMonth
+	endMonth := payload.EndMonth
+	totalMonths := (endYear - startYear) * 12
+	totalMonths += endMonth - startMonth + 1
+	return totalMonths
+}
+
+func checkIfCreatedTimeIsValid(year int, month time.Month, payload types.WasteTypeResponseRange) bool{
+	startYear := payload.StartYear
+	endYear := payload.EndYear
+	startMonth := payload.StartMonth
+	endMonth := payload.EndMonth
+	if year < startYear || year > endYear{
+		return false
+	}
+	if year == startYear && month < time.Month(startMonth) || year == endYear && month > time.Month(endMonth){
+		return false
+	}
+	return true
+}
+
+func getIndex(year int, month time.Month, payload types.WasteTypeResponseRange) int{
 	indices := map[string]int{
 		"January":   1,
 		"February":  2,
@@ -113,32 +167,7 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		"November":  11,
 		"December":  12,
 	}
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-				break
-		}
-		var item types.WastetypeResponse
-		doc.DataTo(&item)
-
-		year := doc.CreateTime.Year()
-		month := doc.CreateTime.Month()
-		if year < startYear || year > endYear{
-			continue
-		}
-		if year == startYear && month < time.Month(startMonth) || year == endYear && month > time.Month(endMonth){
-			continue
-		}
-		index := (year - startYear) * 12 + indices[month.String()] - startMonth
-		metrics[index].Feature++
-		objects := item.Items
-		for _, obj := range objects{
-			if obj.Feedback == 1 {
-				metrics[index].Good++
-			} else if obj.Feedback == 2 {
-				metrics[index].Bad++
-			}
-		} 
-	}
-	json.NewEncoder(w).Encode(metrics)
+	startYear := payload.StartYear
+	startMonth := payload.StartMonth
+	return (year - startYear) * 12 + indices[month.String()] - startMonth
 }
