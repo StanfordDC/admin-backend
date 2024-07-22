@@ -32,6 +32,13 @@ type WastetypeResponse struct{
 	CreateTime time.Time `json:"createTime"`
 }
 
+type WasteTypeResponseRange struct{
+	StartYear string `json:"startYear"`
+	StartMonth string `json:"startMonth"`
+	EndYear string `json:"endYear"`
+	EndMonth string `json:"endMonth"`
+}
+
 type WastetypeResponseStore interface{
 	GetAll() *firestore.DocumentIterator
 }

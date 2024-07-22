@@ -89,20 +89,6 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		{"month": 11, "good": 0, "bad": 0, "feature": 0},
 		{"month": 12, "good": 0, "bad": 0, "feature": 0},
 	}
-	index := map[string]int{
-		"January":   0,
-		"February":  1,
-		"March":     2,
-		"April":     3,
-		"May":       4,
-		"June":      5,
-		"July":      6,
-		"August":    7,
-		"September": 8,
-		"October":   9,
-		"November":  10,
-		"December":  11,
-	}
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -116,15 +102,15 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 			continue
 		}
 		//Get the created month
-		month := doc.CreateTime.Month().String()
+		month := doc.CreateTime.Month()
 
-		months[index[month]]["feature"]++
+		months[month-1]["feature"]++
 		objects := item.Items
 		for _, obj := range objects{
 			if obj.Feedback == 1 {
-				months[index[month]]["good"]++
+				months[month-1]["good"]++
 			} else if obj.Feedback == 2 {
-				months[index[month]]["bad"]++
+				months[month-1]["bad"]++
 			}
 		} 
 	}
