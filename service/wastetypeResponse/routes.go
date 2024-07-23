@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"google.golang.org/api/iterator"
+	"strconv"
 	"time"
 )
 
@@ -20,7 +21,7 @@ func NewHandler(store types.WastetypeResponseStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/responses", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/responses/metrics", h.handleGetMetrics).Methods("GET", "OPTIONS")
-	router.HandleFunc("/responses/history", h.handleGetHistory).Methods("POST")
+	router.HandleFunc("/responses/history/startYear={startYear}&startMonth={startMonth}&endYear={endYear}&endMonth={endMonth}", h.handleGetHistory).Methods("GET", "OPTIONS")
 }
 
 func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
@@ -68,12 +69,8 @@ func (h *Handler) handleGetMetrics(w http.ResponseWriter, r *http.Request){
 
 func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	var payload types.WasteTypeResponseRange
-	err := json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
+	vars := mux.Vars(r)
+	payload := parsePathVariables(vars)
 	iter := h.store.GetAll()
 	totalMonths := getTotalMonths(payload)
 	metrics := initializeMetrics(payload, totalMonths)
@@ -102,6 +99,23 @@ func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
 		} 
 	}
 	json.NewEncoder(w).Encode(metrics)
+}
+
+func parsePathVariables(vars map[string]string) types.WasteTypeResponseRange{
+	var payload types.WasteTypeResponseRange
+	startYear, _ := strconv.Atoi(vars["startYear"])
+	startMonth, _ := strconv.Atoi(vars["startMonth"])
+	endYear, _ := strconv.Atoi(vars["endYear"])
+	endMonth, _ := strconv.Atoi(vars["endMonth"])
+
+	payload = types.WasteTypeResponseRange{
+		StartYear:  startYear,
+		StartMonth: startMonth,
+		EndYear:    endYear,
+		EndMonth:   endMonth,
+	}
+
+	return payload
 }
 
 func initializeMetrics(payload types.WasteTypeResponseRange, totalMonths int) []types.WasteTypeResponseMetric {
