@@ -20,7 +20,7 @@ func NewHandler(store types.WastetypeResponseStore) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router){
 	router.HandleFunc("/responses", h.handleGetAll).Methods("GET", "OPTIONS")
 	router.HandleFunc("/responses/metrics", h.handleGetMetrics).Methods("GET", "OPTIONS")
-	router.HandleFunc("/responses/history", h.handleGetHistory).Methods("GET","OPTIONS")
+	router.HandleFunc("/responses/history", h.handleGetHistory).Methods("POST")
 }
 
 func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
