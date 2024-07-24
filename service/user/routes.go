@@ -27,7 +27,6 @@ func (h *Handler) RegisterRoutes(router *mux.Router){
 }
 
 func (h* Handler) getAllUsers(w http.ResponseWriter,  r *http.Request){
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	iter := h.store.GetAllUsers()
 	var users []types.User
 	for {
@@ -43,7 +42,6 @@ func (h* Handler) getAllUsers(w http.ResponseWriter,  r *http.Request){
 }
 
 func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload types.User
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
@@ -62,12 +60,6 @@ func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Methods", "PUT") 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	var payload types.User
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
@@ -81,8 +73,6 @@ func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Methods", "DELETE") 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	username, ok := vars["username"]
 	if !ok{
@@ -98,13 +88,6 @@ func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
-	// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	// w.Header().Set("Access-Control-Allow-Methods", "POST") 
-	// w.Header().Set("Access-Control-Allow-Origin", "*")
-	// if r.Method == "OPTIONS" {
-	// 	w.WriteHeader(http.StatusOK)
-	// 	return
-	// }
 	var payload types.User
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{

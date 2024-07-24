@@ -25,7 +25,6 @@ func (h *Handler) RegisterRoutes(router *mux.Router){
 }
 
 func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
-	// w.Header().Set("Access-Control-Allow-Origin", "*")
 	iter := h.store.GetAll()
 	var items []types.WastetypeResponse
 	for {
@@ -43,7 +42,6 @@ func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 }
 
 func (h *Handler) handleGetMetrics(w http.ResponseWriter, r *http.Request){
-	// w.Header().Set("Access-Control-Allow-Origin", "*")
 	iter := h.store.GetAll()
 	items := make(map[string]int)
 	for {
@@ -68,7 +66,6 @@ func (h *Handler) handleGetMetrics(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) handleGetHistory(w http.ResponseWriter, r *http.Request){
-	// w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	payload := parsePathVariables(vars)
 	iter := h.store.GetAll()

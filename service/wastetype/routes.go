@@ -26,7 +26,6 @@ func (h *Handler) RegisterRoutes(router *mux.Router){
 }
 
 func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
@@ -39,7 +38,6 @@ func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	iter := h.store.GetAll()
 	var items []types.WasteType
 	for {
@@ -55,7 +53,6 @@ func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
 }
 
 func (h *Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	item, ok := vars["item"]
 	if !ok {
@@ -71,8 +68,6 @@ func (h *Handler) handleGetByItemName(w http.ResponseWriter, r *http.Request){
 }
 
 func (h *Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Methods", "DELETE") 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	vars := mux.Vars(r)
 	item, ok := vars["item"]
 	if !ok {
@@ -88,12 +83,6 @@ func (h *Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("Access-Control-Allow-Methods", "PUT") 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	var payload types.WasteType
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
