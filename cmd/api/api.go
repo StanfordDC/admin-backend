@@ -24,17 +24,19 @@ func NewAPIServer(addr string, db *firestore.Client) *APIServer {
 
 func (s *APIServer) Run() error {
 	router := mux.NewRouter()
+	apiRouter := router.PathPrefix("/api").Subrouter()
+	
 	wastetypeStore := wastetype.NewStore(s.db)
 	wastetypeHandler := wastetype.NewHandler(wastetypeStore)
-	wastetypeHandler.RegisterRoutes(router)
+	wastetypeHandler.RegisterRoutes(apiRouter)
 	
 	wastetypeResponseStore := wastetypeResponse.NewStore(s.db)
 	wastetypeResponseHandler := wastetypeResponse.NewHandler(wastetypeResponseStore)
-	wastetypeResponseHandler.RegisterRoutes(router)
+	wastetypeResponseHandler.RegisterRoutes(apiRouter)
 
 	userStore := user.NewStore(s.db)
 	userHandler := user.NewHandler(userStore)
-	userHandler.RegisterRoutes(router)
+	userHandler.RegisterRoutes(apiRouter)
 
 	corsRouter := corsMiddleware(router)
 	return http.ListenAndServe(s.addr, corsRouter)
