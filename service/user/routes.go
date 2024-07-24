@@ -98,13 +98,13 @@ func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
 }
 
 func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Methods", "POST") 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+	// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// w.Header().Set("Access-Control-Allow-Methods", "POST") 
+	// w.Header().Set("Access-Control-Allow-Origin", "*")
+	// if r.Method == "OPTIONS" {
+	// 	w.WriteHeader(http.StatusOK)
+	// 	return
+	// }
 	var payload types.User
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
