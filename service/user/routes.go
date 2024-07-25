@@ -71,6 +71,7 @@ func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	payload.Password = auth.HashPassword(payload.Password)
 	err = h.store.UpdateUser(payload)
 	if err != nil{
 		http.Error(w, "Update failed", http.StatusInternalServerError)
