@@ -23,7 +23,9 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-Backend designed to support an administrative interface for managing waste types. It provides comprehensive functionality for administrators to oversee and update various waste types. It also tracks and reports key usage metrics, including the total number of application usages and the accuracy of classifications. 
+The project is designed specifically for administrators to efficiently manage waste types and gain insights into mobile app usage.
+
+The backend provides comprehensive functionality for administrators to manage waste types and the logic to track mobile app usage metrics
 
 ### Built With
 * [![Go][go.com]][go-url]
