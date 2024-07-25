@@ -1,6 +1,29 @@
+<a name="readme-top" id="readme-top"></a>
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About the Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#run-locally">Run locally</a></li>
+        <li><a href="#run-using-docker">Run using Docker</a></li>
+      </ul>
+    </li>
+  </ol>
+</details>
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This project is a backend system designed to support an administrative interface for managing waste types. It provides comprehensive functionality for administrators to oversee and update various waste types. It also tracks and reports key usage metrics, including the total number of application usages and the accuracy of classifications. 
+Backend designed to support an administrative interface for managing waste types. It provides comprehensive functionality for administrators to oversee and update various waste types. It also tracks and reports key usage metrics, including the total number of application usages and the accuracy of classifications. 
 
 ### Built With
 * [![Go][go.com]][go-url]
@@ -22,11 +45,12 @@ Clone the repo
    git clone https://github.com/StanfordDC/admin-backend.git
    ```
 ### Run locally
-1. Change directory to main folder
+1. Install Go
+2. Change directory to main folder
    ```sh
    cd admin-backend/cmd/main
    ```
-2. Run the application
+3. Run the application
    ```sh
    go run main.go
    ```
@@ -44,7 +68,7 @@ Clone the repo
    ```js
    docker run -p 8080:8080 admin-backend
    ```
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [firebase-url]: https://firebase.google.com/
 [firebase.com]: https://img.shields.io/badge/firebase-black?style=for-the-badge&logo=firebase&logoColor=color
