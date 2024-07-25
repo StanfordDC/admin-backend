@@ -24,7 +24,7 @@ func NewAPIServer(addr string, db *firestore.Client) *APIServer {
 
 func (s *APIServer) Run() error {
 	router := mux.NewRouter()
-	apiRouter := router.PathPrefix("/api").Subrouter()
+	apiRouter := router.PathPrefix("/v1").Subrouter()
 	
 	wastetypeStore := wastetype.NewStore(s.db)
 	wastetypeHandler := wastetype.NewHandler(wastetypeStore)
