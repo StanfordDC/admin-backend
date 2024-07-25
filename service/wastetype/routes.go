@@ -30,11 +30,17 @@ func (h *Handler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	err = h.store.Create(payload)
 	if err != nil{
 		http.Error(w, "Creation failed", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusCreated) 
+    w.Header().Set("Content-Type", "application/json") 
+    response := map[string]string{"message": "Waste type created successfully"}
+    json.NewEncoder(w).Encode(response) 
 }
 
 func (h *Handler) handleGetAll(w http.ResponseWriter, r *http.Request){
@@ -77,9 +83,17 @@ func (h *Handler) handleDeleteItemByName(w http.ResponseWriter, r *http.Request)
 	result, err := h.store.DeleteItemByName(item)
 	if err != nil{
 		http.Error(w, "Deletion failed", http.StatusInternalServerError)
+		return
 	} else if !result {
 		http.Error(w, "Waste type not found", http.StatusNotFound)
+		return
 	}
+	w.WriteHeader(http.StatusOK) 
+    w.Header().Set("Content-Type", "application/json") 
+    response := map[string]interface{}{
+        "message": "Waste type deleted successfully",
+    }
+    json.NewEncoder(w).Encode(response) 
 }
 
 func (h *Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
@@ -92,5 +106,12 @@ func (h *Handler) handleUpdate(w http.ResponseWriter, r *http.Request){
 	err = h.store.Update(payload)
 	if err != nil{
 		http.Error(w, "Update failed", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK) 
+    w.Header().Set("Content-Type", "application/json") 
+    response := map[string]interface{}{
+        "message": "Waste type updated successfully",
+    }
+    json.NewEncoder(w).Encode(response) 
 }

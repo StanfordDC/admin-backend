@@ -56,7 +56,12 @@ func (h* Handler) createUser(w http.ResponseWriter, r *http.Request){
 	err = h.store.CreateUser(payload)
 	if err != nil{
 		http.Error(w, "Creation failed", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusCreated) 
+    w.Header().Set("Content-Type", "application/json") 
+    response := map[string]string{"message": "User created successfully"}
+    json.NewEncoder(w).Encode(response) 
 }
 
 func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
@@ -69,7 +74,12 @@ func (h* Handler) updateUser(w http.ResponseWriter, r *http.Request){
 	err = h.store.UpdateUser(payload)
 	if err != nil{
 		http.Error(w, "Update failed", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK) 
+    w.Header().Set("Content-Type", "application/json") 
+    response := map[string]string{"message": "User updated successfully"}
+    json.NewEncoder(w).Encode(response) 
 }
 
 func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
@@ -82,9 +92,15 @@ func (h* Handler) deleteUserByUsername(w http.ResponseWriter, r *http.Request){
 	result, err := h.store.DeleteUserByUsername(username)
 	if err != nil{
 		http.Error(w, "Deletion failed", http.StatusInternalServerError)
+		return
 	} else if !result {
 		http.Error(w, "No user found with this username", http.StatusNotFound)
+		return
 	}
+	w.WriteHeader(http.StatusOK) 
+    w.Header().Set("Content-Type", "application/json") 
+    response := map[string]string{"message": "User deleted successfully"}
+    json.NewEncoder(w).Encode(response) 
 }
 
 func (h* Handler) userLogin(w http.ResponseWriter,  r *http.Request){
